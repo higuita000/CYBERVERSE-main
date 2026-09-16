@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBERVERSE 3D | Tienda de Videojuegos 3D</title>
+    <meta name="description" content="La tienda e-commerce de videojuegos 3D más avanzada. Precios en COP, USD y EUR. Catálogo con filtros por género (acción, terror, aventura, pensamiento), reseñas verificadas, soporte 24/7, carrito interactivo y pasarela multipago.">
+    
+    <!-- Favicon Personalizado -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" href="favicon.png">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Canvas de fondo interactivo 3D -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="bg-overlay"></div>
+
+    <!-- Barra de Navegación Futurista -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <img src="favicon.png" alt="CYBERVERSE Logo" class="logo-img-icon">
+            <span>CYBER<span style="color: var(--accent-cyan);">VERSE</span></span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#hero" class="nav-link active"><i class="fa-solid fa-house"></i> Inicio</a></li>
+            <li><a href="#catalogo" class="nav-link"><i class="fa-solid fa-gamepad"></i> Catálogo</a></li>
+            <li><button class="nav-link-btn" onclick="openCommunityReviewsModal()"><i class="fa-solid fa-star"></i> Reseñas Verificadas</button></li>
+            <li><button class="nav-link-btn" onclick="openSupportModal()"><i class="fa-solid fa-headset"></i> Soporte 24/7</button></li>
+        </ul>
+
+        <div class="nav-actions">
+            <!-- Selector de Moneda (COP, USD, EUR, MXN) -->
+            <div class="currency-selector-wrapper" title="Cambiar Moneda">
+                <i class="fa-solid fa-coins" style="color: var(--accent-gold);"></i>
+                <select id="currency-select" class="currency-select">
+                    <option value="COP">🇨🇴 COP ($)</option>
+                    <option value="USD">🇺🇸 USD ($)</option>
+                    <option value="EUR">🇪🇺 EUR (€)</option>
+                    <option value="MXN">🇲🇽 MXN ($)</option>
+                </select>
+            </div>
+
+            <button class="sound-toggle-btn" id="sound-toggle" title="Activar/Desactivar sonido futurista">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+
+            <!-- Wrapper Autenticación Usuario -->
+            <div id="nav-user-wrapper" style="display: flex; align-items: center; gap: 8px;">
+                <button class="btn-secondary" id="nav-auth-btn" onclick="openAuthModal()" style="font-size: 0.85rem; padding: 8px 14px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión / Registro
+                </button>
+            </div>
+
+            <button class="cart-btn" id="open-cart-btn">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Carrito</span>
+                <span class="cart-badge" id="cart-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section con Efecto 3D -->
+    <header class="hero-section" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fa-solid fa-bolt"></i> PRÓXIMA GENERACIÓN EN JUEGOS 3D | COLOMBIA & GLOBAL
+            </div>
+            <h1 class="hero-title">TIENDA <span class="gradient-text">MODERNA</span> DE VIDEOJUEGOS</h1>
+            <p class="hero-subtitle">
+                Explora universos tridimensionales hiperrealistas. Precios adaptables en **COP (Peso Colombiano), USD, EUR**. Filtra por tus géneros favoritos como Acción, Terror, Aventura o Pensamiento, lee **reseñas verificadas**, consulta el **soporte 24/7** y compra en la **pasarela multipago**.
+            </p>
+            <div class="hero-buttons">
+                <a href="#catalogo" class="btn-primary">
+                    <i class="fa-solid fa-rocket"></i> Explorar Catálogo 3D
+                </a>
+                <button class="btn-secondary" id="hero-promo-btn">
+                    <i class="fa-solid fa-tag"></i> Obtener Cupón GAMER2026
+                </button>
+            </div>
+        </div>
+
+        <div class="hero-3d-wrapper">
+            <div class="hero-3d-card glass-panel" id="hero-card" onclick="openQuickView(1)" style="cursor: pointer;" title="Haz clic para ver detalles 3D">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80" alt="Cyberpunk 2088 Hero 3D">
+                <div class="hero-card-overlay">
+                    <div class="hero-card-title">CYBERPUNK 2088: NEON GENESIS</div>
+                    <div class="hero-card-tag"><i class="fa-solid fa-star"></i> 4.9 | RAY TRACING 4K READY (Haz clic para ver)</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de Características Interactiva -->
+    <section class="features-strip" id="features">
+        <div class="feature-box glass-panel" onclick="openGraphicsModal()" style="cursor: pointer;" title="Configurar Gráficos 3D">
+            <div class="feature-icon"><i class="fa-solid fa-cube"></i></div>
+            <div class="feature-info">
+                <h4>Gráficos 3D Ultra</h4>
+                <p>Efectos e inclinación 3D en vivo</p>
+            </div>
+        </div>
+
+        <div class="feature-box glass-panel" onclick="openCommunityReviewsModal()" style="cursor: pointer;" title="Ver todas las Reseñas Verificadas">
+            <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
+            <div class="feature-info">
+                <h4>Reseñas Verificadas</h4>
+                <p>Opiniones y valoraciones reales de gamers</p>
+            </div>
+        </div>
+
+        <div class="feature-box glass-panel" onclick="openPaymentGuideModal()" style="cursor: pointer;" title="Ver guía de Pasarela Multipago">
+            <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="feature-info">
+                <h4>Pasarela Multipago</h4>
+                <p>Tarjetas, Crypto, PayPal, PSE / Nequi</p>
+            </div>
+        </div>
+
+        <div class="feature-box glass-panel" onclick="openSupportModal()" style="cursor: pointer;" title="Abrir Chat de Soporte Gamer 24/7">
+            <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+            <div class="feature-info">
+                <h4>Soporte Gamer 24/7</h4>
+                <p>Asistente IA en vivo de consulta</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catálogo de Productos y Filtros -->
+    <main class="catalog-section" id="catalogo">
+        <div class="section-header">
+            <h2 class="section-title">CATÁLOGO <span class="gradient-text">INTERACTIVO</span></h2>
+            <p class="section-desc">Filtra juegos según tu estilo de juego favorito y consulta sus reseñas</p>
+        </div>
+
+        <!-- Barra de Búsqueda y Ordenamiento -->
+        <div class="filter-toolbar glass-panel">
+            <div class="search-sort-row">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" class="search-input" placeholder="Buscar por título, género o plataforma...">
+                </div>
+
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <label for="sort-select" style="font-family: var(--font-cyber); color: var(--text-secondary);"><i class="fa-solid fa-arrow-down-short-wide"></i> Ordenar:</label>
+                    <select id="sort-select" class="sort-select">
+                        <option value="featured">Destacados</option>
+                        <option value="price-low">Precio: Menor a Mayor</option>
+                        <option value="price-high">Precio: Mayor a Menor</option>
+                        <option value="rating">Mejor Valorados</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botones de Filtro por Género (Acción, Terror, Aventura, Pensamiento, etc.) -->
+            <div class="genre-filter-tabs" id="genre-tabs">
+                <button class="genre-btn active" data-genre="all"><i class="fa-solid fa-border-all"></i> Todos los Juegos</button>
+                <button class="genre-btn" data-genre="accion"><i class="fa-solid fa-crosshairs"></i> Acción</button>
+                <button class="genre-btn" data-genre="terror"><i class="fa-solid fa-ghost"></i> Terror</button>
+                <button class="genre-btn" data-genre="aventura"><i class="fa-solid fa-compass"></i> Aventura</button>
+                <button class="genre-btn" data-genre="pensamiento"><i class="fa-solid fa-brain"></i> Pensamiento / Puzzles</button>
+                <button class="genre-btn" data-genre="rpg"><i class="fa-solid fa-shield-dragon"></i> RPG / Fantasía</button>
+                <button class="genre-btn" data-genre="scifi"><i class="fa-solid fa-user-astronaut"></i> Sci-Fi / Estrategia</button>
+            </div>
+        </div>
+
+        <!-- Grid de Tarjetas de Productos 3D -->
+        <div class="products-grid" id="products-container">
+            <!-- Renderizado dinámicamente desde app.js -->
+        </div>
+    </main>
+
+    <!-- Drawer de Carrito de Compras -->
+    <div class="cart-drawer-overlay" id="cart-overlay"></div>
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3><i class="fa-solid fa-cart-shopping"></i> Tu Carrito 3D</h3>
+            <button class="close-cart-btn" id="close-cart-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="cart-items-wrapper" id="cart-items">
+            <!-- Items agregados se mostrarán aquí -->
+        </div>
+
+        <div class="cart-footer">
+            <div class="promo-code-box">
+                <input type="text" id="promo-input" class="promo-input" placeholder="Cupón (ej. GAMER2026)">
+                <button class="promo-btn" id="apply-promo-btn">Aplicar</button>
+            </div>
+
+            <div class="cart-totals">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">COP $0</span>
+                </div>
+                <div class="total-row">
+                    <span>Descuento Promo:</span>
+                    <span id="cart-discount" style="color: var(--accent-green);">COP $0</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>TOTAL:</span>
+                    <span id="cart-total" style="color: var(--accent-cyan);">COP $0</span>
+                </div>
+            </div>
+
+            <button class="checkout-btn" id="start-checkout-btn">
+                <i class="fa-solid fa-lock"></i> IR A PASARELA DE PAGO
+            </button>
+        </div>
+    </aside>
+
+    <!-- Modal Vista Rápida de Producto & Reseñas -->
+    <div class="modal-overlay" id="quick-modal">
+        <div class="modal-container" id="quick-modal-body">
+            <!-- Generado dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Modal Pasarela de Pago Completa -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-container">
+            <button class="modal-close-btn" id="close-checkout-btn"><i class="fa-solid fa-xmark"></i></button>
+            
+            <h2 style="margin-bottom: 5px; color: var(--accent-cyan);"><i class="fa-solid fa-shield-halved"></i> PASARELA DE PAGO SEGURA</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">Selecciona tu método de pago preferido para finalizar el pedido.</p>
+
+            <!-- Datos del Comprador y Correo Electrónico -->
+            <div class="glass-panel" style="padding: 15px; margin-bottom: 20px; border: 1px solid var(--border-cyan);">
+                <h4 style="color: var(--accent-cyan); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-envelope"></i> DATOS DE ENTREGA DE LICENCIA
+                </h4>
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-input" id="input-customer-name" placeholder="Juan Pérez" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Correo Electrónico (donde llegará la clave)</label>
+                        <input type="email" class="form-input" id="input-customer-email" placeholder="tu.correo@gmail.com" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestañas de Métodos de Pago -->
+            <div class="checkout-tabs" id="payment-tabs">
+                <button class="payment-tab active" data-target="tab-card"><i class="fa-solid fa-credit-card"></i> Tarjeta Crédito/Débito</button>
+                <button class="payment-tab" data-target="tab-paypal"><i class="fa-brands fa-paypal"></i> PayPal</button>
+                <button class="payment-tab" data-target="tab-crypto"><i class="fa-brands fa-bitcoin"></i> Criptomonedas</button>
+                <button class="payment-tab" data-target="tab-local"><i class="fa-solid fa-money-bill-transfer"></i> PSE / Nequi / OXXO / Efectivo</button>
+                <button class="payment-tab" data-target="tab-apple"><i class="fa-brands fa-apple"></i> Apple / Google Pay</button>
+            </div>
+
+            <!-- Formulario Tarjeta con Simulación 3D -->
+            <div class="payment-content active" id="tab-card">
+                <!-- Tarjeta 3D interactiva en vivo -->
+                <div class="credit-card-3d" id="preview-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-chip"></div>
+                        <i class="fa-brands fa-cc-visa" style="font-size: 2rem; color: #fff;"></i>
+                    </div>
+                    <div class="card-num-display" id="card-num-preview">•••• •••• •••• ••••</div>
+                    <div class="card-holder-exp">
+                        <div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">TITULAR</div>
+                            <div id="card-name-preview" style="color: #fff; font-weight: bold;">GAMER PRO</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">EXPIRA</div>
+                            <div id="card-exp-preview" style="color: #fff; font-weight: bold;">12/28</div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="card-form" onsubmit="event.preventDefault(); processPayment('Tarjeta de Crédito');">
+                    <div class="form-group">
+                        <label class="form-label">Número de Tarjeta</label>
+                        <input type="text" class="form-input" id="input-card-num" placeholder="4532 8901 2345 6789" maxlength="19" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombre en la Tarjeta</label>
+                        <input type="text" class="form-input" id="input-card-name" placeholder="Juan Pérez" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Fecha Expiración</label>
+                            <input type="text" class="form-input" id="input-card-exp" placeholder="MM/AA" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Código CVC / CVV</label>
+                            <input type="password" class="form-input" placeholder="123" maxlength="4" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="checkout-btn" style="margin-top: 10px;">
+                        <i class="fa-solid fa-lock"></i> PAGAR AHORA <span class="checkout-total-val"></span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- PayPal -->
+            <div class="payment-content" id="tab-paypal">
+                <div style="text-align: center; padding: 30px;">
+                    <i class="fa-brands fa-paypal" style="font-size: 4rem; color: #0070ba; margin-bottom: 15px;"></i>
+                    <h3>Pago Exprés con PayPal</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Serás redirigido a PayPal para confirmar la transacción de manera instantánea.</p>
+                    <button onclick="processPayment('PayPal')" class="checkout-btn" style="background: #0070ba; box-shadow: 0 0 20px rgba(0,112,186,0.6);">
+                        <i class="fa-brands fa-paypal"></i> Continuar con PayPal (<span class="checkout-total-val"></span>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Criptomonedas -->
+            <div class="payment-content" id="tab-crypto">
+                <div class="crypto-box">
+                    <h3 style="color: var(--accent-gold);"><i class="fa-brands fa-bitcoin"></i> Paga con Bitcoin / Ethereum / USDT</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Escanea el código QR o copia la dirección de la wallet para transferir:</p>
+                    
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=bitcoin:1CyberVerse3DGamingStoreWalletBTCAddress2026" alt="Bitcoin QR" class="qr-code-img">
+                    
+                    <div class="wallet-addr" id="wallet-address-text">
+                        1CyberVerse3DGamingStoreWalletBTC2026X
+                    </div>
+                    <button onclick="copyWallet()" class="btn-secondary" style="margin-top: 10px; width: 100%;">
+                        <i class="fa-solid fa-copy"></i> Copiar Dirección de Wallet
+                    </button>
+
+                    <button onclick="processPayment('Criptomonedas')" class="checkout-btn" style="margin-top: 20px; background: linear-gradient(135deg, var(--accent-gold), #e67e22);">
+                        <i class="fa-solid fa-check-circle"></i> Confirmar Pago de <span class="checkout-total-val"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Efectivo / PSE / Nequi / SPEI -->
+            <div class="payment-content" id="tab-local">
+                <div style="padding: 20px; text-align: center;">
+                    <i class="fa-solid fa-store" style="font-size: 3rem; color: var(--accent-green); margin-bottom: 15px;"></i>
+                    <h3>PSE / Nequi / Efectivo (Colombia & LatAm)</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">Genera tu ficha de pago para transferir mediante PSE, Nequi, Bancolombia, SPEI u OXXO.</p>
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 20px; font-family: monospace;">
+                        Referencia de Pago: <strong>CYBER-COP-9842-2026</strong>
+                    </div>
+                    <button onclick="processPayment('PSE / Nequi / Efectivo')" class="checkout-btn" style="background: var(--accent-green); color: #000;">
+                        <i class="fa-solid fa-file-invoice"></i> Generar Ficha por <span class="checkout-total-val"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Apple / Google Pay -->
+            <div class="payment-content" id="tab-apple">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 3rem; margin-bottom: 15px; display: flex; justify-content: center; gap: 20px;">
+                        <i class="fa-brands fa-apple"></i>
+                        <i class="fa-brands fa-google"></i>
+                    </div>
+                    <h3>Pago One-Touch Biométrico</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 25px;">Utiliza FaceID, TouchID o Google Wallet para pagar de forma instantánea.</p>
+                    <button onclick="processPayment('Apple/Google Pay')" class="checkout-btn" style="background: #ffffff; color: #000;">
+                        <i class="fa-brands fa-apple"></i> Pagar <span class="checkout-total-val"></span> con Biometría
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal de Soporte Gamer IA 24/7 -->
+    <div class="modal-overlay" id="support-modal">
+        <div class="modal-container" style="max-width: 600px;">
+            <button class="modal-close-btn" onclick="closeSupportModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="color: var(--accent-cyan); margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-headset"></i> ASISTENTE IA DE SOPORTE 24/7
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.9rem;">
+                Hola, gamer. ¿En qué podemos ayudarte hoy? Respuestas en tiempo real las 24 horas del día.
+            </p>
+
+            <!-- Ventana de Chat del Asistente -->
+            <div id="support-chat-box" style="background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); border-radius: var(--radius-md); padding: 15px; height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <div style="background: rgba(0, 240, 255, 0.15); border: 1px solid var(--border-cyan); padding: 10px 14px; border-radius: 12px; align-self: flex-start; max-width: 85%; font-size: 0.9rem;">
+                    <strong>CYBER-BOT AI:</strong> ¡Bienvenido a CYBERVERSE! Puedes preguntarme sobre tus claves de juego, activación 3D, métodos de pago o cupones de descuento.
+                </div>
+            </div>
+
+            <!-- Accesos Rápidos de Pregunta -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                <button onclick="sendQuickSupportMsg('¿Cómo recibo mi clave de juego?')" class="genre-btn" style="font-size: 0.8rem; padding: 6px 12px;"><i class="fa-solid fa-key"></i> Recibo de claves</button>
+                <button onclick="sendQuickSupportMsg('¿Qué cupones hay activos?')" class="genre-btn" style="font-size: 0.8rem; padding: 6px 12px;"><i class="fa-solid fa-tag"></i> Cupones</button>
+                <button onclick="sendQuickSupportMsg('¿Aceptan Nequi y PSE?')" class="genre-btn" style="font-size: 0.8rem; padding: 6px 12px;"><i class="fa-solid fa-building-columns"></i> PSE y Nequi</button>
+            </div>
+
+            <!-- Formulario de Envío de Mensaje -->
+            <form onsubmit="event.preventDefault(); submitSupportMsg();" style="display: flex; gap: 10px;">
+                <input type="text" id="support-msg-input" class="form-input" placeholder="Escribe tu consulta aquí..." required>
+                <button type="submit" class="btn-primary" style="padding: 12px 20px;">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Reseñas Verificadas de la Comunidad -->
+    <div class="modal-overlay" id="community-reviews-modal">
+        <div class="modal-container" style="max-width: 750px;">
+            <button class="modal-close-btn" onclick="closeCommunityReviewsModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="color: var(--accent-cyan); margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-comments"></i> RESEÑAS VERIFICADAS DE LA COMUNIDAD
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Opiniones auténticas compartidas por la comunidad global de gamers en CYBERVERSE.
+            </p>
+
+            <div id="all-community-reviews" style="max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+                <!-- Renderizado dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Guía de Pasarela Multipago -->
+    <div class="modal-overlay" id="payment-guide-modal">
+        <div class="modal-container" style="max-width: 650px;">
+            <button class="modal-close-btn" onclick="closePaymentGuideModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="color: var(--accent-cyan); margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-shield-halved"></i> PASARELA MULTIPAGO Y SEGURIDAD
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                En CYBERVERSE contamos con encriptación SSL de 256 bits y procesamiento instantáneo de claves en todas nuestras opciones de pago.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                <div class="glass-panel" style="padding: 15px;">
+                    <h4 style="color: var(--accent-cyan); margin-bottom: 5px;"><i class="fa-solid fa-credit-card"></i> Tarjetas de Crédito / Débito</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Visa, Mastercard, AMEX con validación 3D Secure instantánea.</p>
+                </div>
+                <div class="glass-panel" style="padding: 15px;">
+                    <h4 style="color: var(--accent-green); margin-bottom: 5px;"><i class="fa-solid fa-building-columns"></i> PSE / Nequi / SPEI / OXXO</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Pagos locales directos sin comisiones adicionales.</p>
+                </div>
+                <div class="glass-panel" style="padding: 15px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 5px;"><i class="fa-brands fa-bitcoin"></i> Criptomonedas</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Bitcoin (BTC), Ethereum (ETH) y USDT con confirmación en cadena.</p>
+                </div>
+                <div class="glass-panel" style="padding: 15px;">
+                    <h4 style="color: #fff; margin-bottom: 5px;"><i class="fa-brands fa-apple"></i> Apple & Google Pay</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Pago biométrico en un solo toque mediante TouchID o FaceID.</p>
+                </div>
+            </div>
+
+            <button onclick="closePaymentGuideModal(); document.getElementById('cart-btn')?.click();" class="btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-cart-shopping"></i> Ir al Carrito y Probar Pasarela
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Ajustes Gráficos 3D -->
+    <div class="modal-overlay" id="graphics-modal">
+        <div class="modal-container" style="max-width: 550px;">
+            <button class="modal-close-btn" onclick="closeGraphicsModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="color: var(--accent-cyan); margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-cube"></i> CONFIGURACIÓN GRÁFICA 3D
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Ajusta el rendimiento del motor gráfico y efectos de la tienda en tiempo real.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;" class="glass-panel" style="padding: 15px;">
+                    <span>Fondo de Partículas 3D:</span>
+                    <button id="toggle-particles-btn" onclick="toggleParticles()" class="btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;">ACTIVADO</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;" class="glass-panel" style="padding: 15px;">
+                    <span>Efectos 3D Tilt en Tarjetas:</span>
+                    <button id="toggle-tilt-btn" onclick="toggleTilt()" class="btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;">ACTIVADO</button>
+                </div>
+            </div>
+
+            <button onclick="closeGraphicsModal()" class="btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-check"></i> Guardar y Aplicar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Pedido (Recibo) -->
+    <div class="modal-overlay" id="confirmation-modal">
+        <div class="modal-container" style="text-align: center; max-width: 600px;">
+            <i class="fa-solid fa-circle-check" style="font-size: 4.5rem; color: var(--accent-green); margin-bottom: 15px; text-shadow: 0 0 20px var(--accent-green);"></i>
+            <h2 style="font-size: 2rem; margin-bottom: 10px;">¡COMPRA COMPLETADA CON ÉXITO!</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Gracias por adquirir tus videojuegos 3D en CYBERVERSE.</p>
+
+            <div style="background: rgba(0,240,255,0.05); border: 1px solid var(--border-cyan); padding: 20px; border-radius: var(--radius-md); text-align: left; margin-bottom: 25px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Número de Pedido:</span>
+                    <strong style="color: var(--accent-cyan);" id="receipt-order-id">#CV-90218</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Método de Pago:</span>
+                    <strong id="receipt-method">Tarjeta de Crédito</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Estado:</span>
+                    <span style="color: var(--accent-green); font-weight: bold;"><i class="fa-solid fa-key"></i> Clave Activada</span>
+                </div>
+                <hr style="border-color: var(--border-glass); margin: 10px 0;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                    <span>Total Pagado:</span>
+                    <span style="color: var(--accent-cyan);" id="receipt-total">COP $0</span>
+                </div>
+            </div>
+
+            <button onclick="closeConfirmation()" class="btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-gamepad"></i> Continuar Jugando
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Autenticación (Iniciar Sesión / Registro) -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-container" style="max-width: 480px;">
+            <button class="modal-close-btn" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px;">
+                <button class="payment-tab active" id="tab-btn-login" onclick="switchAuthTab('login')" style="flex: 1;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                </button>
+                <button class="payment-tab" id="tab-btn-register" onclick="switchAuthTab('register')" style="flex: 1;">
+                    <i class="fa-solid fa-user-plus"></i> Crear Cuenta
+                </button>
+            </div>
+
+            <!-- Formulario Iniciar Sesión -->
+            <form id="login-form" onsubmit="event.preventDefault(); submitLogin();">
+                <h3 style="color: var(--accent-cyan); margin-bottom: 15px;"><i class="fa-solid fa-lock"></i> INICIAR SESIÓN EN CYBERVERSE</h3>
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-input" id="login-email" placeholder="tu.correo@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+                </div>
+                <div id="login-error-msg" style="color: #ff0055; font-size: 0.85rem; margin-bottom: 15px; display: none; background: rgba(255,0,85,0.1); border: 1px solid #ff0055; padding: 10px; border-radius: var(--radius-sm);"></div>
+                <button type="submit" class="checkout-btn" style="width: 100%;">
+                    <i class="fa-solid fa-right-to-bracket"></i> INGRESAR Y CONTINUAR
+                </button>
+            </form>
+
+            <!-- Formulario Registrarse -->
+            <form id="register-form" onsubmit="event.preventDefault(); submitRegister();" style="display: none;">
+                <h3 style="color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-user-plus"></i> REGISTRO DE NUEVO GAMER</h3>
+                <div class="form-group">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-input" id="reg-name" placeholder="Juan Pérez" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-input" id="reg-email" placeholder="tu.correo@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="reg-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+                </div>
+                <div id="reg-error-msg" style="color: #ff0055; font-size: 0.85rem; margin-bottom: 15px; display: none; background: rgba(255,0,85,0.1); border: 1px solid #ff0055; padding: 10px; border-radius: var(--radius-sm);"></div>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 14px;">
+                    <i class="fa-solid fa-user-check"></i> CREAR MI CUENTA GAMER
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Mis Compras & Historial de Claves -->
+    <div class="modal-overlay" id="user-orders-modal">
+        <div class="modal-container" style="max-width: 750px;">
+            <button class="modal-close-btn" onclick="closeUserOrdersModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="color: var(--accent-cyan); margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-gamepad"></i> MIS COMPRAS Y CLAVES DIGITALES
+            </h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Historial de videojuegos adquiridos y licencias registradas en la base de datos MySQL.
+            </p>
+            
+            <div id="user-orders-list" style="max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+                <!-- Cargado dinámicamente desde MySQL -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor de Toasts -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="logo">
+                <img src="favicon.png" alt="CYBERVERSE Logo" class="logo-img-icon">
+                <span>CYBER<span style="color: var(--accent-cyan);">VERSE 3D</span></span>
+            </div>
+            <p>La tienda de videojuegos 3D más potente de la web. © 2026 CYBERVERSE Inc. Todos los derechos reservados.</p>
+            
+            <div class="footer-socials">
+                <button onclick="openSocialLink('Discord')" title="Únete a nuestro Discord Gamer" class="social-btn"><i class="fa-brands fa-discord"></i></button>
+                <button onclick="openSocialLink('Steam')" title="Ver Grupo de Steam" class="social-btn"><i class="fa-brands fa-steam"></i></button>
+                <button onclick="openSocialLink('Twitch')" title="Canal de Transmisiones 3D" class="social-btn"><i class="fa-brands fa-twitch"></i></button>
+                <button onclick="openSocialLink('YouTube')" title="Ver Trailers de Juegos 3D" class="social-btn"><i class="fa-brands fa-youtube"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Base de Productos y Lógica -->
+    <script src="database/db_store.js"></script>
+    <script src="products.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+erDiagram
+    USUARIOS {
+        string id PK
+        string nombre_completo
+        string email UK
+        string password_hash
+        string rol
+        string estado
+        timestamp fecha_registro
+    }
+
+    DIRECCIONES_FACTURACION {
+        int id PK
+        string usuario_id FK
+        string pais
+        string ciudad
+        string direccion_linea1
+    }
+
+    CATEGORIAS {
+        int id PK
+        string codigo UK
+        string nombre
+        text descripcion
+    }
+
+    PLATAFORMAS {
+        int id PK
+        string codigo UK
+        string nombre
+        string icono_class
+    }
+
+    PRODUCTOS {
+        int id PK
+        int categoria_id FK
+        string titulo
+        string slug UK
+        decimal precio_cop
+        decimal rating_promedio
+        string badge
+        string imagen_url
+        boolean destacado
+    }
+
+    PRODUCTO_PLATAFORMAS {
+        int producto_id PK, FK
+        int plataforma_id PK, FK
+    }
+
+    LICENCIAS_DIGITALES {
+        int id PK
+        int producto_id FK
+        int plataforma_id FK
+        string clave_activacion UK
+        string estado
+    }
+
+    CUPONES {
+        int id PK
+        string codigo UK
+        string tipo_descuento
+        decimal valor_descuento
+        timestamp fecha_expiracion
+    }
+
+    CARRITOS {
+        string id PK
+        string usuario_id FK
+        timestamp fecha_creacion
+    }
+
+    CARRITO_ITEMS {
+        int id PK
+        string carrito_id FK
+        int producto_id FK
+        int plataforma_id FK
+        int cantidad
+    }
+
+    METODOS_PAGO {
+        int id PK
+        string codigo UK
+        string nombre
+        string icono_class
+    }
+
+    ORDENES {
+        string id PK
+        string codigo_referencia UK
+        string usuario_id FK
+        int cupon_id FK
+        decimal subtotal_cop
+        decimal descuento_cop
+        decimal total_cop
+        string moneda_compra
+        string estado
+        timestamp fecha_creacion
+    }
+
+    ORDEN_DETALLES {
+        int id PK
+        string orden_id FK
+        int producto_id FK
+        int plataforma_id FK
+        int licencia_id FK, UK
+        int cantidad
+        decimal precio_unitario_cop
+        decimal subtotal_cop
+    }
+
+    TRANSACCIONES_PAGO {
+        string id PK
+        string orden_id FK
+        int metodo_pago_id FK
+        string referencia_pasarela
+        decimal monto
+        string moneda
+        string estado_transaccion
+        timestamp fecha_transaccion
+    }
+
+    DETALLES_PAGO_TARJETA {
+        int id PK
+        string transaccion_id FK, UK
+        string nombre_titular
+        string marca_tarjeta
+        string ultimos_cuatro
+        string mes_expiracion
+        string anio_expiracion
+        string token_transaccion
+    }
+
+    DETALLES_PAGO_ALTERNATIVO {
+        int id PK
+        string transaccion_id FK, UK
+        string proveedor
+        string identificador_cuenta
+    }
+
+    RESEÑAS {
+        int id PK
+        int producto_id FK
+        string usuario_id FK
+        int calificacion
+        text comentario
+        boolean compra_verificada
+    }
+
+    AUDITORIA_ESTADOS_ORDEN {
+        int id PK
+        string orden_id FK
+        string estado_anterior
+        string estado_nuevo
+        timestamp fecha_cambio
+    }
+
+    %% Relaciones
+    USUARIOS ||--o{ DIRECCIONES_FACTURACION : "registra"
+    USUARIOS ||--o{ ORDENES : "realiza"
+    USUARIOS ||--o{ CARRITOS : "posee"
+    USUARIOS ||--o{ RESEÑAS : "escribe"
+
+    CATEGORIAS ||--o{ PRODUCTOS : "clasifica"
+    PRODUCTOS ||--o{ PRODUCTO_PLATAFORMAS : "disponible_en"
+    PLATAFORMAS ||--o{ PRODUCTO_PLATAFORMAS : "soporta"
+    PRODUCTOS ||--o{ LICENCIAS_DIGITALES : "asigna_stock"
+    PRODUCTOS ||--o{ ORDEN_DETALLES : "incluye"
+    PRODUCTOS ||--o{ CARRITO_ITEMS : "agrega"
+
+    CARRITOS ||--o{ CARRITO_ITEMS : "contiene"
+    CUPONES ||--o{ ORDENES : "aplica_descuento"
+
+    ORDENES ||--o{ ORDEN_DETALLES : "desglosa"
+    ORDENES ||--o{ TRANSACCIONES_PAGO : "paga_con"
+    ORDENES ||--o{ AUDITORIA_ESTADOS_ORDEN : "traza_cambios"
+
+    METODOS_PAGO ||--o{ TRANSACCIONES_PAGO : "procesa"
+    TRANSACCIONES_PAGO ||--o| DETALLES_PAGO_TARJETA : "detalla_tarjeta"
+    TRANSACCIONES_PAGO ||--o| DETALLES_PAGO_ALTERNATIVO : "detalla_alternativo"
+
+    LICENCIAS_DIGITALES ||--o| ORDEN_DETALLES : "se_vincula_a"
