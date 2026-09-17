@@ -778,6 +778,25 @@ function submitUserReview(productId) {
     product.reviewsCount += 1;
 
     showToast('¡Tu reseña verificada ha sido publicada!', 'fa-circle-check');
+
+    // Persistir en Supabase (solo si hay sesión; invitados quedan en local)
+    if (currentUser) {
+        fetch(getApiUrl('resenas.php'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                producto_id: productId,
+                usuario_id: currentUser.id,
+                calificacion: newReview.rating,
+                comentario: newReview.comment
+            })
+        }).then(r => r.json()).then(d => {
+            if (d.success) showToast('Reseña guardada en la base de datos', 'fa-database');
+        }).catch(e => console.warn('No se pudo guardar reseña en DB:', e));
+    } else {
+        showToast('Inicia sesión para guardar tu reseña en la base de datos', 'fa-user');
+    }
+
     openQuickView(productId);
     renderProducts();
 }
